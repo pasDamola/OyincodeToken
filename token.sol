@@ -17,7 +17,6 @@ contract OyincodeToken{
     function transferToken(address payable _to, uint256 value) public ownerOnly {
         if(balanceOf[owner] < value)revert("Owner's balance must not be less than value to be transferred");
         if(balanceOf[_to] + value < balanceOf[_to])revert("Recipient's balance must be more than former state");
-        _to.transfer(value);
         balanceOf[owner] -= value;
         balanceOf[_to] += value;
     }
