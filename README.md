@@ -2,7 +2,7 @@
 
 ### My ERC20 token
 
-### What ERC20 tokens required to do:
+### What ERC20 tokens are required to do:
 
 - Get the total token supply.
 - Get the account balance.
