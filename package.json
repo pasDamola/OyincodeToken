@@ -1,0 +1,22 @@
+{
+  "name": "oyincodetoken",
+  "version": "1.0.0",
+  "description": "- Get the total token supply.\r - Get the account balance.\r - Transfer the token from one party to another.\r - Approve the use of token as a monetary asset.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pasDamola/OyincodeToken.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pasDamola/OyincodeToken/issues"
+  },
+  "homepage": "https://github.com/pasDamola/OyincodeToken#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "^2.3.0"
+  }
+}
