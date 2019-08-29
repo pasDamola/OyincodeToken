@@ -8,11 +8,13 @@ contract Token {
     uint256 totalSupply_;
     
     mapping(address => uint256) balances;
-    mapping(address => mapping (address => uint256)) allowed;
+    mapping(address => uint256) allowed;
+    
+
     
     constructor(uint256 total) public {
-        total = totalSupply_;
-        balances[msg.sender] = totalSupply_;
+        totalSupply_ = total;
+        balances[msg.sender] = total;
     }
     
      // events are solidity's way of notifying the client of occurences within the contract
@@ -40,22 +42,22 @@ contract Token {
     
     // owner approves of delegate accounts to withdraw tokens
     function approve(address delegate, uint numTokens) public returns (bool) {
-      allowed[msg.sender][delegate] = numTokens;
+      allowed[delegate] = numTokens;
       emit Approval(msg.sender, delegate, numTokens);
       return true;
     }
     
     // Get Number of Tokens Approved for Withdrawal
-    function allowance(address owner, address delegate) public view returns (uint) {
-      return allowed[owner][delegate];
+    function allowance(address delegate) public view returns (uint) {
+      return allowed[delegate];
     }
     
     //Transfer Tokens by Delegate
     function transferFrom(address owner, address buyer, uint numTokens) public returns (bool) {
       require(numTokens <= balances[msg.sender], "Owner's balance must be more than number of tokens being sent");
-      require(numTokens <= allowed[owner][msg.sender], "Delegate's balance must be more than the number of tokens being sent");
+      require(numTokens <= allowed[owner], "Delegate's balance must be more than the number of tokens being sent");
       balances[owner] = balances[owner] - numTokens;
-      allowed[owner][msg.sender] = allowed[owner][msg.sender] - numTokens;
+      allowed[owner] = allowed[owner] - numTokens;
       balances[buyer] = balances[buyer] + numTokens;
       emit Transfer(owner, buyer, numTokens);
       return true;
