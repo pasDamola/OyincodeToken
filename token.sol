@@ -15,7 +15,7 @@ contract Token {
     function approve(address spender, uint tokens)  public returns (bool);
     function transferFrom(address from, address to, uint tokens) public returns (bool);
     
-    // events
+    // events, solidity's way of notifying clients of happenings within the contract eg. frontend app
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
     event Transfer(address indexed from, address indexed to,uint tokens);
 }
