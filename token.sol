@@ -5,7 +5,6 @@ contract Token {
     string public constant name = "OyincodeToken";
     string public constant symbol = "OTH";
     uint8 public constant decimals = 0;
-    uint public numOfTokens;
     uint256 totalSupply_;
     
     mapping(address => uint256) balances;
@@ -15,36 +14,51 @@ contract Token {
         total = totalSupply_;
         balances[msg.sender] = totalSupply_;
     }
-     
-    modifier ownerOnly(){
-        require(numOfTokens <= balances[msg.sender], "Only owner can perform this action");
-        _;
-    }
+    
+     // events are solidity's way of notifying the client of occurences within the contract
+    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+    event Transfer(address indexed from, address indexed to, uint tokens);
     
     // get token supply
     function totalSupply() public view returns (uint256) {
       return totalSupply_;
     }
+    
     // get balance of owner's account
     function balanceOf(address tokenOwner) public view returns (uint) {
       return balances[tokenOwner];
     }
     
     //transfer number of tokens, only owner can perform this action
-    function transfer(address receiver, uint numTokens) public ownerOnly returns  (bool) {
-      numTokens = numOfTokens;
+    function transfer(address receiver, uint numTokens) public returns (bool) {
+      require(numTokens <= balances[msg.sender], "Owner's balance must be more than number of tokens being sent");
       balances[msg.sender] = balances[msg.sender] - numTokens;
       balances[receiver] = balances[receiver] + numTokens;
       emit Transfer(msg.sender, receiver, numTokens);
       return true;
     }
     
-    function allowance(address tokenOwner, address spender)
-    public view returns (uint);
-    function approve(address spender, uint tokens)  public returns (bool);
-    function transferFrom(address from, address to, uint tokens) public returns (bool);
+    // owner approves of delegate accounts to withdraw tokens
+    function approve(address delegate, uint numTokens) public returns (bool) {
+      allowed[msg.sender][delegate] = numTokens;
+      emit Approval(msg.sender, delegate, numTokens);
+      return true;
+    }
     
-    // events are solidity's way of notifying the client of occurences within the contract
-    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
-    event Transfer(address indexed from, address indexed to, uint tokens);
+    // Get Number of Tokens Approved for Withdrawal
+    function allowance(address owner, address delegate) public view returns (uint) {
+      return allowed[owner][delegate];
+    }
+    
+    //Transfer Tokens by Delegate
+    function transferFrom(address owner, address buyer, uint numTokens) public returns (bool) {
+      require(numTokens <= balances[msg.sender], "Owner's balance must be more than number of tokens being sent");
+      require(numTokens <= allowed[owner][msg.sender], "Delegate's balance must be more than the number of tokens being sent");
+      balances[owner] = balances[owner] - numTokens;
+      allowed[owner][msg.sender] = allowed[owner][msg.sender] - numTokens;
+      balances[buyer] = balances[buyer] + numTokens;
+      emit Transfer(owner, buyer, numTokens);
+      return true;
+    }
+   
 }
